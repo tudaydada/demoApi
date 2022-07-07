@@ -13,8 +13,8 @@ import java.util.List;
 public class DemoApiApplication {
 
     @GetMapping("/")
-    List<String> getInit(){
-        return new ArrayList<>(List.of("a","b","c"));
+    String getInit(){
+        return "hello vietnam";
     }
     public static void main(String[] args) {
         SpringApplication.run(DemoApiApplication.class, args);
