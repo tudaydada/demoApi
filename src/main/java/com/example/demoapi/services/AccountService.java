@@ -8,7 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.List;
 
 public interface AccountService {
-    UserDetails getById(Long id);
+    UserDetails loadById(Long id);
+    AccountResponse getById(Long id);
     List<AccountResponse> getAll();
-    UserDetails register(RegisterForm registerForm);
+    AccountResponse register(RegisterForm registerForm);
 }

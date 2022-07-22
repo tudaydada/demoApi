@@ -5,6 +5,7 @@ import com.example.demoapi.form.RegisterForm;
 import com.example.demoapi.jwt.JwtTokenProvider;
 import com.example.demoapi.model.Account;
 import com.example.demoapi.model.ResponseObject;
+import com.example.demoapi.model.response.AccountResponse;
 import com.example.demoapi.services.AccountService;
 import com.example.demoapi.services.CategoryService;
 import com.example.demoapi.services.CommentService;
@@ -131,14 +132,15 @@ public class homeController {
         return "username:"+account.getUsername()+"/token:"+token;
     }
 
-    @PostMapping("/registerUser")
+    @PostMapping("/register")
     public ResponseEntity<ResponseObject> registerUser(@Valid @RequestBody RegisterForm registerForm){
 
-        if (accountService.register(registerForm)!=null){
+        AccountResponse accountResponse =  accountService.register(registerForm);
+        if (accountResponse!=null){
 
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200,"Register Success",null)
+                    new ResponseObject(200,"Register Success",accountResponse)
             );
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(

@@ -24,11 +24,19 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
     @Autowired
     PasswordEncoder passwordEncoder;
     @Override
-    public UserDetails getById(Long id) {
+    public UserDetails loadById(Long id) {
         Account account = accountRepository.findByAccountId(id);
         if (account==null)
             throw  new UsernameNotFoundException(id.toString());
         return new CustomUserDetail(account);
+    }
+
+    @Override
+    public AccountResponse getById(Long id) {
+        Account account = accountRepository.findByAccountId(id);
+        if (account==null)
+            return null;
+        return toResponse(account);
     }
 
     @Override
@@ -37,15 +45,16 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
     }
 
     @Override
-    public UserDetails register(RegisterForm registerForm) {
+    public AccountResponse register(RegisterForm registerForm) {
         Account current = new Account();
         current.setUsername(registerForm.getUsername());
         current.setPassword(passwordEncoder.encode(registerForm.getPassword()));
         current.setRole(registerForm.getRole());
 
+        accountRepository.save(current);
         if (current==null)
-            throw  new UsernameNotFoundException("failed");
-        return new CustomUserDetail(current);
+            return null;
+        return toResponse(current);
     }
 
     @Override
