@@ -1,13 +1,18 @@
 package com.example.demoapi.controller;
 
 import com.example.demoapi.form.LoginForm;
+import com.example.demoapi.form.RegisterForm;
 import com.example.demoapi.jwt.JwtTokenProvider;
 import com.example.demoapi.model.Account;
+import com.example.demoapi.model.ResponseObject;
+import com.example.demoapi.services.AccountService;
 import com.example.demoapi.services.CategoryService;
 import com.example.demoapi.services.CommentService;
 import com.example.demoapi.services.PostService;
 import com.example.demoapi.until.CustomUserDetail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,6 +34,9 @@ public class homeController {
     PostService postService;
     @Autowired
     CommentService commentService;
+
+    @Autowired
+    AccountService accountService;
 
 //    @GetMapping("/categories")
 //    public List<CategoryResponse> categories() {
@@ -122,5 +130,21 @@ public class homeController {
 
         return "username:"+account.getUsername()+"/token:"+token;
     }
+
+    @PostMapping("/registerUser")
+    public ResponseEntity<ResponseObject> registerUser(@Valid @RequestBody RegisterForm registerForm){
+
+        if (accountService.register(registerForm)!=null){
+
+
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200,"Register Success",null)
+            );
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ResponseObject(400,"Register fail", "This phone number already exists")
+        );
+    }
+
 
 }
